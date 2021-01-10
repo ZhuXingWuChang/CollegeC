@@ -5,31 +5,33 @@
 #include <stdio.h>
 int main()
 {
-	int hcf(int,int);
-	int lcd(int,int,int);
-	int u,v,h,l;
-	scanf("%d%d",&u,&v);
-	h=hcf(u,v);
-	printf("HCF=%d\n",h);
-	l=lcd(u,v,h);
-	printf("LCD=%d\n",l);
+	int hcf(int, int);
+	int lcd(int, int, int);
+	int u, v, h, l;
+	scanf("%d%d", &u, &v);
+	h = hcf(u, v);
+	printf("HCF=%d\n", h);
+	l = lcd(u, v, h);
+	printf("LCD=%d\n", l);
 	return 0;
 }
-int hcf(int u,int v)//最大公约数
+int hcf(int u, int v) //最大公约数
 {
-	int t,r;
-	if(v>u)
+	int t, r;
+	if (v > u)
 	{
-		t=u;u=v;v=t;//把大的放到前面 
+		t = u;
+		u = v;
+		v = t; //把大的放到前面
 	}
-	while((r=u%v)!=0)
+	while ((r = u % v) != 0)
 	{
-		u=v;
-		v=r;
+		u = v;
+		v = r;
 	}
-	return(v);
+	return (v);
 }
-int lcd(int u,int v,int h)//最小公倍数
+int lcd(int u, int v, int h) //最小公倍数
 {
-	return(u*v/h);
+	return (u * v / h);
 }

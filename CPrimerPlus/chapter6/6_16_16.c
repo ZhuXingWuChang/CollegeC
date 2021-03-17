@@ -11,5 +11,17 @@
 #define COMPOUND_INSTEREST 0.05
 int main(void)
 {
+    double da_money = 100.0; // Daphne的钱
+    double de_money = 100.0; // Deirdre的钱
+    int count = 0;
+
+    while (da_money >= de_money)
+    {
+        da_money += 100.0 * SIMPLE_INSTEREST;
+        de_money += de_money * COMPOUND_INSTEREST;
+        count++;
+    }
+    printf("%d years, Deirdre is winner.\n", count);
+
     return 0;
 }

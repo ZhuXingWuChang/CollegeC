@@ -52,7 +52,7 @@ Status visit(ElemType elem)
 Status InitList(LinkList *linkList)
 {
     // linklist = (LinkList *)malloc(sizeof(Node)); 这种写法是给一个二级指针分配了内存
-    *linkList=(LinkList)malloc(sizeof(Node));   // 给二级指针*linkList分配一个结点的内存
+    *linkList = (LinkList)malloc(sizeof(Node)); // 给二级指针*linkList分配一个结点的内存
     if (!(linkList))
         return ERROR;
     (*linkList)->next = NULL;
@@ -88,10 +88,27 @@ int ListLength(LinkList linkList)
     return count;
 }
 
-// Status ListTraverse(LinkList linkList)
-// {
-//     for ()
-// }
+Status GetElem(LinkList linkList, int i, ElemType *elem)
+{
+
+}
+
+int LocateElem(LinkList linkList, ElemType elem)
+{
+
+}
+
+Status ListInsert(LinkList *linkList, int i, ElemType elem)
+{
+    
+}
+
+Status ListTraverse(LinkList linkList)
+{
+    for (int i = 0; i < ListLength(linkList); i++)
+        visit(linkList->data);
+    return OK;
+}
 
 int main(void)
 {

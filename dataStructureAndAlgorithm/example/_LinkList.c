@@ -1,181 +1,210 @@
-#include <stdio.h>
-#include <stdlib.h> // 提供srand()的原形
-#include <time.h>   // 提供time()的原形
+#include "stdio.h"    
+#include "string.h"
+#include "ctype.h"      
+#include "stdlib.h"   
+
+#include "math.h"  
+#include "time.h"
 
 #define OK 1
 #define ERROR 0
 #define TRUE 1
 #define FALSE 0
 
-#define MAXSIZE 20
-typedef int Status;
-typedef int ElemType;
+#define MAXSIZE 20 /* 存储空间初始分配量 */
 
-Status visit(ElemType elem)
+typedef int Status;/* Status是函数的类型,其值是函数结果状态代码，如OK等 */
+typedef int ElemType;/* ElemType类型根据实际情况而定，这里假设为int */
+
+
+Status visit(ElemType c)
 {
-    printf("%d ", elem);
+    printf("%d ",c);
     return OK;
 }
 
 typedef struct Node
 {
-    ElemType data;     // data是一个普通变量,存放数据
-    struct Node *next; // next是一个一级指针变量,存放(下一个Node的)地址
-} Node;
+    ElemType data;
+    struct Node *next;
+}Node;
+typedef struct Node *LinkList; /* 定义LinkList */
 
-typedef struct Node *LinkList; //自定义的LinkList类型,其实是一个结构体指针类型
-
-// 初始化链式线性表
-Status InitList(LinkList *linkList) // linkList是结构体指针的指针变量,即结构体Node的二级指针变量
-{
-    // malloc()分配成功,会返回分配区域的地址,失败则会返回NULL
-    *linkList = (LinkList)malloc(sizeof(Node)); // 产生头节点,并使linkList指向此头节点,*linkList是一级指针变量
-    if (!(*linkList))                           // 如果失败,即如果*linkList==NULL,即!(*linkList)==TRUE
-        return ERROR;
-    (*linkList)->next = NULL; // 头节点的指针域为空,即初始化后,链表里只有一个头结点
+/* 初始化链式线性表 */
+Status InitList(LinkList *L) 
+{ 
+    *L=(LinkList)malloc(sizeof(Node)); /* 产生头结点,并使L指向此头结点 */
+    if(!(*L)) /* 存储分配失败 */
+            return ERROR;
+    (*L)->next=NULL; /* 指针域为空 */
 
     return OK;
 }
 
-// 初始条件:链式线性表linkList已存在
-// 操作结果:将linkList重置为空表
-Status ClearList(LinkList *linkList)
-{
-    LinkList currentNodeP, nextNodeP;
-    currentNodeP = (*linkList)->next; // 用指针currentNodeP存放头节点的指针域(即第一个结点的地址)
-    while (currentNodeP)              // 如果currentNodeP为非空
-    {
-        nextNodeP = currentNodeP->next; // 让nextNodeP存放指针currentNodeP的指针域(currentNodeP的下一个结点的地址)
-        free(currentNodeP);             // 释放掉指针currentNodeP区域的内存(当前结点的内存)
-        currentNodeP = nextNodeP;       // 让currentNodeP为下一个结点的地址
-    }                                   // 此时所有结点都已经被释放掉内存,链表中只剩下一个头节点
-    (*linkList)->next = NULL;           // 头节点的指针域为空
-
-    return OK;
+/* 初始条件：链式线性表L已存在。操作结果：若L为空表，则返回TRUE，否则返回FALSE */
+Status ListEmpty(LinkList L)
+{ 
+    if(L->next)
+            return FALSE;
+    else
+            return TRUE;
 }
 
-// 初始条件:链式线性表linkList已存在,1<=i<=ListLength(linkList)
-// 操作结果:用elem返回linkList中第i个数据元素的值
-int ListLength(LinkList linkList)
+/* 初始条件：链式线性表L已存在。操作结果：将L重置为空表 */
+Status ClearList(LinkList *L)
+{ 
+	LinkList p,q;
+	p=(*L)->next;           /*  p指向第一个结点 */
+	while(p)                /*  没到表尾 */
+	{
+		q=p->next;
+		free(p);
+		p=q;
+	}
+	(*L)->next=NULL;        /* 头结点指针域为空 */
+	return OK;
+}
+
+/* 初始条件：链式线性表L已存在。操作结果：返回L中数据元素个数 */
+int ListLength(LinkList L)
 {
-    int i = 0;
-    LinkList currentNodeP = linkList->next; // currentNodeP指向第一个结点
-    while (currentNodeP)
+    int i=0;
+    LinkList p=L->next; /* p指向第一个结点 */
+    while(p)                        
     {
         i++;
-        currentNodeP = currentNodeP->next;
+        p=p->next;
     }
     return i;
 }
 
-// 初始条件:链式线性表linkList已存在,1<=i<=ListLength(linkList)
-// 操作结果:用elem返回linkList中第i个数据元素的值
-Status GetElem(LinkList linkList, int i, ElemType *elem)
+/* 初始条件：链式线性表L已存在，1≤i≤ListLength(L) */
+/* 操作结果：用e返回L中第i个数据元素的值 */
+Status GetElem(LinkList L,int i,ElemType *e)
 {
-    int j = 1;                              // j为计数器
-    LinkList currentNodeP = linkList->next; // 让currentNodeP指向第一个结点
-    while (currentNodeP && j < i)           // currentNodeP非空,或者还没遍历到i时,继续
-    {
-        currentNodeP = currentNodeP->next; // 让currentNodeP指向下一个结点
-        j++;
-    }
-    if (!currentNodeP || j > i) // currentNodeP==NULL的情况是currentNodeP到了链表的末尾,j>i的情况是超过了链表长度
-        return ERROR;
-    *elem = currentNodeP->data;
-    return OK;
+	int j;
+	LinkList p;		/* 声明一结点p */
+	p = L->next;		/* 让p指向链表L的第一个结点 */
+	j = 1;		/*  j为计数器 */
+	while (p && j<i)  /* p不为空或者计数器j还没有等于i时，循环继续 */
+	{   
+		p = p->next;  /* 让p指向下一个结点 */
+		++j;
+	}
+	if ( !p || j>i ) 
+		return ERROR;  /*  第i个元素不存在 */
+	*e = p->data;   /*  取第i个元素的数据 */
+	return OK;
 }
 
-// 初始条件:链式线性表linkList已经存在
-// 操作结果:返回linkList中第一个与elem满足相等关系的数据元素的位序
-// 若这样的元素不存在,则返回值为0
-int LocateElem(LinkList linkList, ElemType elem)
+/* 初始条件：链式线性表L已存在 */
+/* 操作结果：返回L中第1个与e满足关系的数据元素的位序。 */
+/* 若这样的数据元素不存在，则返回值为0 */
+int LocateElem(LinkList L,ElemType e)
 {
-    int i = 0;
-    LinkList currentNodeP = linkList->next;
-    while (currentNodeP)
+    int i=0;
+    LinkList p=L->next;
+    while(p)
     {
         i++;
-        if (currentNodeP->data == elem)
-            return i;
+        if(p->data==e) /* 找到这样的数据元素 */
+                return i;
+        p=p->next;
     }
 
     return 0;
 }
 
-// 初始条件:链式线性表linkList已存在,1<=i<=ListLength(linkList)
-// 操作结果:在linkList中第i个位置之前插入新的数据元素elem,linkList的长度加1
-Status ListInsert(LinkList *linkList, int i, ElemType elem)
+
+/* 初始条件：链式线性表L已存在,1≤i≤ListLength(L)， */
+/* 操作结果：在L中第i个位置之前插入新的数据元素e，L的长度加1 */
+Status ListInsert(LinkList *L,int i,ElemType e)
+{ 
+	int j;
+	LinkList p,s;
+	p = *L;   
+	j = 1;
+	while (p && j < i)     /* 寻找第i个结点 */
+	{
+		p = p->next;
+		++j;
+	} 
+	if (!p || j > i) 
+		return ERROR;   /* 第i个元素不存在 */
+	s = (LinkList)malloc(sizeof(Node));  /*  生成新结点(C语言标准函数) */
+	s->data = e;  
+	s->next = p->next;      /* 将p的后继结点赋值给s的后继  */
+	p->next = s;          /* 将s赋值给p的后继 */
+	return OK;
+}
+
+/* 初始条件：链式线性表L已存在，1≤i≤ListLength(L) */
+/* 操作结果：删除L的第i个数据元素，并用e返回其值，L的长度减1 */
+Status ListDelete(LinkList *L,int i,ElemType *e) 
+{ 
+	int j;
+	LinkList p,q;
+	p = *L;
+	j = 1;
+	while (p->next && j < i)	/* 遍历寻找第i个元素 */
+	{
+        p = p->next;
+        ++j;
+	}
+	if (!(p->next) || j > i) 
+	    return ERROR;           /* 第i个元素不存在 */
+	q = p->next;
+	p->next = q->next;			/* 将q的后继赋值给p的后继 */
+	*e = q->data;               /* 将q结点中的数据给e */
+	free(q);                    /* 让系统回收此结点，释放内存 */
+	return OK;
+}
+
+/* 初始条件：链式线性表L已存在 */
+/* 操作结果：依次对L的每个数据元素输出 */
+Status ListTraverse(LinkList L)
 {
-    LinkList currentNodeP, insertNodeP;
-    currentNodeP = (*linkList)->next; // 让currentNodeP指向第一个结点.为什么不指向头节点?因为反正是要插入一个的.
-    int j = 1;
-    while (currentNodeP && j < i)
+    LinkList p=L->next;
+    while(p)
     {
-        currentNodeP = currentNodeP->next;
-        j++;
+        visit(p->data);
+        p=p->next;
     }
-    if (!currentNodeP || j > i)
-        return ERROR;
-    insertNodeP = (Node *)malloc(sizeof(Node));
-    insertNodeP->next = currentNodeP->next;
-    currentNodeP->next = insertNodeP; // 因为S是一个LinkList(即Node的指针),所以不需要用&运算符了
-    insertNodeP->data = elem;
+    printf("\n");
     return OK;
 }
 
-// 初始条件:链式线性表linkList已存在,1<=i<=ListLength(linkList)
-// 操作结果:删除linkList的第i个数据元素,并用elem返回其值,linkList的长度减1
-Status ListDelete(LinkList *linkList, int i, ElemType *elem)
+/*  随机产生n个元素的值，建立带表头结点的单链线性表L（头插法） */
+void CreateListHead(LinkList *L, int n) 
 {
-    LinkList currentNodeP, nextNodeP;
-    currentNodeP = *linkList; // 让currentNodeP指向头节点.为什么不指向第一个结点?因为可能没有结点.
-    int j = 1;
-    while (currentNodeP->next && j < i)
-    {
-        currentNodeP = currentNodeP->next;
-        j++;
-    }
-    if (!currentNodeP || j > i)
-        return ERROR;
-    // 现在可以确认,currentNodeP存在且i范围合法,且currentNodeP正指向i(待删除)的结点
-    *elem = currentNodeP->data;
-    nextNodeP = currentNodeP->next;
-    free(currentNodeP);
-    currentNodeP = nextNodeP->next;
-    // currentNodeP->next = currentNodeP->next->next; 如果这样,那么会导致内存泄露
-    return OK;
+	LinkList p;
+	int i;
+	srand(time(0));                         /* 初始化随机数种子 */
+	*L = (LinkList)malloc(sizeof(Node));
+	(*L)->next = NULL;                      /*  先建立一个带头结点的单链表 */
+	for (i=0; i<n; i++) 
+	{
+		p = (LinkList)malloc(sizeof(Node)); /*  生成新结点 */
+		p->data = rand()%100+1;             /*  随机生成100以内的数字 */
+		p->next = (*L)->next;    
+		(*L)->next = p;						/*  插入到表头 */
+	}
 }
 
-// 初始条件:链式线性表linkList已存在,1<=i<=ListLength(linkList)
-// 操作结果:一次对linkList的每个数据元素输出
-Status ListTraverse(LinkList linkList)
+/*  随机产生n个元素的值，建立带表头结点的单链线性表L（尾插法） */
+void CreateListTail(LinkList *L, int n) 
 {
-    LinkList currentNodeP = linkList->next;
-    int i = 1;
-    while (currentNodeP && i <= ListLength(linkList))
-    {
-        visit(currentNodeP->data);
-        currentNodeP = currentNodeP->next;
-        i++;
-    }
-    if (i == ListLength(linkList))
-        return OK;
-    return ERROR;
-}
-
-// 随机产生elemNum个元素的值,建立带表头结点的单链线性表L(头插法)
-void CreateListHead(LinkList *linklist, int elemNum)
-{
-    LinkList currentNodeP, tailNodeP;
-    srand(time(0)); // 初始化随机种子
-    *linklist = (LinkList)malloc(sizeof(Node));
-    tailNodeP = *linklist; // 此时只有一个头节点,所以头结点和尾结点是同一结点
-    for (int i = 1; i <= elemNum; i++)
-    {
-        currentNodeP = (Node *)malloc(sizeof(Node));
-        currentNodeP->data = rand() % 100 + 1; // 随机生成100以内的数字
-        tailNodeP->next = currentNodeP;        // 把当前节点插入到尾节点后面
-        tailNodeP = currentNodeP;              // 尾结点后移一位
-    }
-    tailNodeP->next = NULL;
+	LinkList p,r;
+	int i;
+	srand(time(0));                      /* 初始化随机数种子 */
+	*L = (LinkList)malloc(sizeof(Node)); /* L为整个线性表 */
+	r=*L;                                /* r为指向尾部的结点 */
+	for (i=0; i<n; i++) 
+	{
+		p = (Node *)malloc(sizeof(Node)); /*  生成新结点 */
+		p->data = rand()%100+1;           /*  随机生成100以内的数字 */
+		r->next=p;                        /* 将表尾终端结点的指针指向新结点 */
+		r = p;                            /* 将当前的新结点定义为表尾终端结点 */
+	}
+	r->next = NULL;                       /* 表示当前链表结束 */
 }

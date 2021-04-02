@@ -68,8 +68,8 @@ Status ListEmpty(LinkList linklist)
     // 只需要判断有没有第一个结点就行了
     LinkList currentNodeP = linklist->next;
     if (currentNodeP)
-        return OK;
-    return ERROR;
+        return ERROR;
+    return OK;
 }
 
 Status ClearList(LinkList *linkList)
@@ -96,7 +96,7 @@ int ListLength(LinkList linkList)
 {
     // 要确定linkList的长度,就需要对整个表进行遍历,故应该有一个count来记录遍历的次数
     // 需要一个currentNodeP来遍历这个表,如果是空表,表长就为0,所以count的初值为0
-    LinkList currentNodeP = linkList;
+    LinkList currentNodeP = linkList->next; // 计数的时候不能把头结点算进去,所以从第一个结点开始
     int count = 0;
     while (currentNodeP)
     {
@@ -129,7 +129,7 @@ Status GetElem(LinkList linkList, int i, ElemType *elem)
 int LocateElem(LinkList linkList, ElemType elem)
 {
     // 返回linkList中第一个与elem相等的结点的位置,如果找不到就返回0
-    LinkList currentNodeP = linkList->next; // 从头节点开始
+    LinkList currentNodeP = linkList; // 从头节点开始
     int count = 0;
     while (currentNodeP)
     {
@@ -155,7 +155,7 @@ Status ListInsert(LinkList *linkList, int i, ElemType elem)
         count++;
         currentNodeP = currentNodeP->next;
     }
-    if (!currentNodeP || count > i)
+    if (!currentNodeP || count > i - 1)
         return ERROR;
     newNodeP = (LinkList)malloc(sizeof(Node));
     if (!newNodeP) // 分配失败则退出
@@ -188,6 +188,17 @@ Status ListDelete(LinkList *linkList, int i, ElemType *elem)
     return OK;
 }
 
+Status ListTraverse(LinkList linkList)
+{
+    LinkList currentNodeP = linkList->next;
+    while (currentNodeP)
+    {
+        visit(currentNodeP->data);
+        currentNodeP = currentNodeP->next;
+    }
+    return OK;
+}
+
 // 随机产生elemNum个元素的值,通过在头结点后面不断插入新结点,建立带头结点的单链线性表
 void CreateListHead(LinkList *linkList, int elemNum)
 {
@@ -209,15 +220,16 @@ void CreateListHead(LinkList *linkList, int elemNum)
 }
 
 // 随机产生elemNum个元素的值,通过在尾结点后面不断插入新结点,建立带头结点的单链线性表
-void CreateListHead(LinkList *linkList, int elemNum)
+void CreateListTail(LinkList *linkList, int elemNum)
 {
     // 我们需要不断在尾结点后面插入一个新的Node,所以依赖一个循环,每循环一次count++
     // 由于我们需要一直不丢失尾结点的位置,所以需要一个tailNodeP指向尾结点
     // 还需要一个newNodeP指向新分配内存的结点,给这个结点赋一个随机值,
     // 然后让新结点指向NULL,让尾结点指向新结点
     LinkList tailNodeP, newNodeP;
-    (*linkList) = (LinkList)malloc(sizeof(Node));
-    tailNodeP = (*linkList)->next = NULL;
+    (*linkList) = (LinkList)malloc(sizeof(Node)); // 建立头结点
+    (*linkList)->next = NULL;                     // 让头结点的下一个指向NULL
+    tailNodeP = *linkList;                        // 此时没有任何结点,所以尾结点指向头结点
     for (int count = 0; count < elemNum; count++)
     {
         newNodeP = (LinkList)malloc(sizeof(Node));
@@ -227,15 +239,4 @@ void CreateListHead(LinkList *linkList, int elemNum)
         tailNodeP = newNodeP;
     }
     newNodeP->next = NULL;
-}
-
-int main(void)
-{
-    LinkList linkList;
-    InitList(&linkList);
-    ListInsert(&linkList, 1, 10);
-    ListTraverse(linkList);
-    printf("\n%d", ClearList(&linkList));
-
-    return 0;
 }

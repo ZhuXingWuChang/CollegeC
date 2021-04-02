@@ -42,6 +42,7 @@ Status ListInsert(LinkList *linkList, int i, ElemType elem);
 Status ListDelete(LinkList *linkList, int i, ElemType *elem);
 Status ListTraverse(LinkList linkList);
 void CreateListHead(LinkList *linklist, int elemNum);
+void CreateListTail(LinkList *linkList, int elemNum);
 
 Status visit(ElemType elem)
 {
@@ -187,17 +188,45 @@ Status ListDelete(LinkList *linkList, int i, ElemType *elem)
     return OK;
 }
 
-Status ListTraverse(LinkList linkList)
+// 随机产生elemNum个元素的值,通过在头结点后面不断插入新结点,建立带头结点的单链线性表
+void CreateListHead(LinkList *linkList, int elemNum)
 {
-    // 让当前指针指向第一个结点,为什么这里不指向头节点?因为有第一个结点就输出
-    // 没有第一个结点就不输出,没有头结点什么事情
-    LinkList currentNodeP = linkList->next;
-    while (currentNodeP)
+    // 我们需要不断的在头结点的后面插入一个新的元素,所以依赖一个循环,每循环一次count++
+    // 而(*linkList)可以直接获取到头结点,所以不需要一个currentNodeP指向头结点
+    // 在循环中,我们需要一个newNodeP来指向新分配内存的结点,给这个结点赋随机值
+    // 然后让它指向头结点的下一个,再让头结点指向它.当count等于elemNum时,循环结束
+    LinkList newNodeP;
+    (*linkList) = (LinkList)malloc(sizeof(Node)); // 建立头结点
+    (*linkList)->next = NULL;
+    for (int count = 0; count < elemNum; count++)
     {
-        visit(currentNodeP->data);
-        currentNodeP = currentNodeP->next;
+        newNodeP = (LinkList)malloc(sizeof(Node));
+        newNodeP->data = rand() % 100 + 1; // 原型在stdlib.h中
+        newNodeP->next = (*linkList)->next;
+        (*linkList)->next = newNodeP;
     }
-    return OK;
+    return;
+}
+
+// 随机产生elemNum个元素的值,通过在尾结点后面不断插入新结点,建立带头结点的单链线性表
+void CreateListHead(LinkList *linkList, int elemNum)
+{
+    // 我们需要不断在尾结点后面插入一个新的Node,所以依赖一个循环,每循环一次count++
+    // 由于我们需要一直不丢失尾结点的位置,所以需要一个tailNodeP指向尾结点
+    // 还需要一个newNodeP指向新分配内存的结点,给这个结点赋一个随机值,
+    // 然后让新结点指向NULL,让尾结点指向新结点
+    LinkList tailNodeP, newNodeP;
+    (*linkList) = (LinkList)malloc(sizeof(Node));
+    tailNodeP = (*linkList)->next = NULL;
+    for (int count = 0; count < elemNum; count++)
+    {
+        newNodeP = (LinkList)malloc(sizeof(Node));
+        newNodeP->data = rand() % 100 + 1;
+        // newNodeP->next = tailNodeP->next; 这一句不能这么写,因为尾结点没有下一个了
+        tailNodeP->next = newNodeP;
+        tailNodeP = newNodeP;
+    }
+    newNodeP->next = NULL;
 }
 
 int main(void)

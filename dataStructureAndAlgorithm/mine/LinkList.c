@@ -143,7 +143,7 @@ int LocateElem(LinkList linkList, ElemType elem)
 
 Status ListInsert(LinkList *linkList, int i, ElemType elem)
 {
-    // 注意这里的操作,因为要在第i个结点"之前"插入一个新节点,所以找到第i-1个结点的位置就行
+    // 注意这里的操作,因为要在第i个结点"之前"插入一个新结点,所以找到第i-1个结点的位置就行
     // 如果第i-1个结点为空,或者count超过了i,那么退出.
     // 至此我们已经找到了第i-1个结点,然后为新节点分配内存并赋值,让新节点指向第i个结点
     // 让第i-1个结点指向新节点,即可

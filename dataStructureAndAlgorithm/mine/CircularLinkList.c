@@ -184,10 +184,24 @@ void CreateListTail(CircularLinkList *CLL, int elemNum)
     return;
 }
 
+Status ListConnect(CircularLinkList *CLLa, CircularLinkList *CLLb)
+{
+    CircularLinkList tailNodePa = *CLLa;
+    CircularLinkList tailNodePb = *CLLb;
+    while (tailNodePa->next != *CLLa)
+        tailNodePa = tailNodePa->next;
+    while (tailNodePb->next != *CLLb)
+        tailNodePb = tailNodePb->next;
+    tailNodePa->next = (*CLLb)->next;
+    tailNodePb->next = *CLLa;
+    return OK;
+}
+
 int main(void)
 {
-    CircularLinkList CLL;
+    CircularLinkList CLL, newCLL;
     printf("Can function InitList() work? %s!\n", InitList(&CLL) ? "Yes" : "No");
+    InitList(&newCLL);
     printf("Can function ListInsert() work? %s!\n", ListInsert(&CLL, 1, 25) ? "Yes" : "No");
     CreateListHead(&CLL, 5);
     CreateListTail(&CLL, 5);
@@ -199,5 +213,11 @@ int main(void)
     printf("Can function ListDelete() work? %s!\n", ListDelete(&CLL, 6, &elem) ? "Yes" : "No");
     printf("The deleted element is %d.\n", elem);
     ListTraverse(CLL);
+    printf("------------------------------\n");
+    CreateListHead(&newCLL, 10);
+    ListTraverse(newCLL);
+    printf("Can function ListConnect() work? %s!\n", ListConnect(&CLL, &newCLL) ? "Yes" : "No");
+    ListTraverse(CLL);
+
     return 0;
 }

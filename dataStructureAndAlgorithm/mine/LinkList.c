@@ -34,6 +34,7 @@ typedef struct Node *LinkList; // Node是指针,Node的地址是二级指针,所
 
 Status visit(ElemType elem);
 Status InitList(LinkList *linkList);
+Status ListEmpty(LinkList linklist);
 Status ClearList(LinkList *linkList);
 int ListLength(LinkList linkList);
 Status GetElem(LinkList linkList, int i, ElemType *elem);

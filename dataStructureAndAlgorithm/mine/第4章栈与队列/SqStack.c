@@ -90,7 +90,7 @@ int StackLength(SqStack stack)
 
 void StackTraverse(SqStack stack)
 {
-    for (int i = 0; i < StackLength(stack); i++)
+    for (int i = 0; i < stack.top + 1; i++)
         visit(stack.data[i]);
     printf("\n");
     return;

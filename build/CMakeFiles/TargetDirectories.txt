@@ -1,0 +1,3 @@
+D:/CollegeC/build/CMakeFiles/edit_cache.dir
+D:/CollegeC/build/CMakeFiles/debug.dir
+D:/CollegeC/build/CMakeFiles/rebuild_cache.dir

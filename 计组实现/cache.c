@@ -32,6 +32,7 @@ int main(void)
     int mainMemory[MAINSIZE][WORDNUM] = {0};   // 主存有1024个块,每个块有64个字
     int cacheMemory[CACHESIZE][WORDNUM] = {0}; // cache有32行,每一行有64个字
     int cam[CACHESIZE] = {0};                  // CAM存放主存存到cache中对应的地址
+    int visitCount[CACHESIZE] = {0};           // 每一行的访问计数器
     double hit = 0.0;                          // hit代表CPU到cache的命中率
     int count = 0;                             // count用来存放命中的次数
 
@@ -101,10 +102,32 @@ int main(void)
     for (int i = 0; i < ADRESSNUM; i++)
     {
         int blockNum = startBlockNum + i;
-        // 检查CPU发出的连续地址,命中了cache多少次
+
         for (int j = 0; j < CACHESIZE; j++)
+        {
+            // LRU替换策略的计数原理
             if (blockNum == cam[j])
-                count++;
+            {
+                count++; // 这个count是为了最终计算命中率的
+                visitCount[j]++;
+            }
+            else
+                visitCount[j] = 0;
+        }
+
+        // 每一行计数完以后,找到第一个值最大的计数器,下次将其替换掉
+        int max = 0;
+        for (int j = 0; j < CACHESIZE; j++)
+        {
+            if (visitCount[j] > max)
+                max = j; // 保存最大值的下标
+        }
+
+        // 替换操作
+        for (int j = 0; j < WORDNUM; j++)
+        {
+            cacheMemory[max][j] = mainMemory[blockNum + 1][j];
+        }
     }
 
     // 计算出命中率

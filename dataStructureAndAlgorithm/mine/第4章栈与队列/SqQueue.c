@@ -79,7 +79,11 @@ Status DeQueue(SqQueue *queue, ElemType *elem)
 {
     if (queue->rear <= 0)
         return ERROR;
-    *elem = queue->data[queue->rear - 1];
+    *elem = queue->data[queue->front];
+    for (int i = queue->front; i < queue->rear - 1; i++)
+    {
+        queue->data[i] = queue->data[i + 1];
+    }
     queue->rear--;
     return OK;
 }
@@ -110,6 +114,8 @@ int main(void)
     GetHead(queue, &elem);
     printf("elem = %d\n", elem);
     QueueTraverse(queue);
+    int length = QueueLength(queue);
+    printf("length: %d\n", length);
     ClearQueue(&queue);
     bool flag = QueueEmpty(queue);
     printf("flag = %d\n", flag);

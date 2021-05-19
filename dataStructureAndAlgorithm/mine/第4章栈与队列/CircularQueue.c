@@ -96,7 +96,7 @@ void QueueTraverse(CircularQueue cqueue)
 {
     int i;
     i = cqueue.front;
-    while ((i + cqueue.front) != cqueue.rear)
+    while (i != cqueue.rear)
     {
         visit(cqueue.data[i]);
         i = (i + 1) % MAXSIZE;
@@ -118,6 +118,11 @@ int main(void)
     EnQuene(&cqueue, 4);
     EnQuene(&cqueue, 0);
     QueueTraverse(cqueue);
+    GetHead(cqueue, &elem);
+    printf("The head element is %d\n", elem);
+    printf("The Queue's length is %d\n", QueueLength(cqueue));
+    ClearQueue(&cqueue);
+    printf("Now, the Queue is empty? %s", QueueEmpty(cqueue) ? "Yes" : "No");
 
     return 0;
 }

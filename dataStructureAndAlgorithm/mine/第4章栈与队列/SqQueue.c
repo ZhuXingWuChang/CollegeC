@@ -54,8 +54,8 @@ Status ClearQueue(SqQueue *queue)
 Status QueueEmpty(SqQueue queue)
 {
     if (queue.rear == 0)
-        return OK;
-    return ERROR;
+        return true;
+    return false;
 }
 
 Status GetHead(SqQueue queue, ElemType *elem)

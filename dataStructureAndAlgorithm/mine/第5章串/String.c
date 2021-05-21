@@ -32,7 +32,7 @@ endADT
 
 #define OK 1
 #define ERROR 0
-#define MAXSIZE 5
+#define MAXSIZE 40
 
 typedef int Status;
 typedef char String[MAXSIZE + 1];
@@ -178,7 +178,7 @@ int Index(String desStr, String mainStr, int queryStartP)
 {
     int mainCursor = queryStartP;
     int desCursor = 1;
-    while (mainCursor <= mainStr[0] && desCursor < desStr[0])
+    while (mainCursor <= mainStr[0] && desCursor <= desStr[0])
         if (mainStr[mainCursor] == desStr[desCursor])
         {
             mainCursor++;
@@ -252,6 +252,7 @@ _Bool StrInsert(String mainStr, int insertPos, String insertStr)
             mainStr[i + insertStr[0]] = mainStr[i];   // 以移动的间隔得到赋值条件的关系
         for (int i = 1; i <= insertStr[0]; i++)       // 以插入多少长度得到循环条件的关系
             mainStr[i - 1 + insertPos] = insertStr[i];
+        mainStr[0] += insertStr[0];
         return true;
     }
     else
@@ -260,6 +261,7 @@ _Bool StrInsert(String mainStr, int insertPos, String insertStr)
             mainStr[i + insertStr[0]] = mainStr[i];                   // 以移动的间隔得到赋值关系
         for (int i = 1; i <= insertStr[0]; i++)                       // 以插入多少长度得到循环条件的关系
             mainStr[i - 1 + insertPos] = insertStr[i];
+        mainStr[0] = MAXSIZE;
         return false;
     }
 }
@@ -279,7 +281,7 @@ Status StrDelete(String str, int deletePos, int len)
 {
     if (deletePos < 1 || deletePos > str[0] || len < 1 || deletePos + len > str[0] + 1)
         return ERROR;
-    for (int i = deletePos + len; i < str[0]; i++)
+    for (int i = deletePos + len; i <= str[0]; i++)
         str[i - len] = str[i];
     str[0] -= len;
     return OK;
@@ -288,26 +290,25 @@ Status StrDelete(String str, int deletePos, int len)
 // 思路:这个操作最好使用其它的函数,单独实现的话需要考虑许多情况,比如替换后是否越界等
 //      queryStartP=1,从开头开始匹配
 //      do
-//          从查找的起始位置,获取长度和旧串相同的子串
-//          如果在这个位置之后,有子串和旧串模式匹配,那么起始位置更新至旧串的开头(使用模式匹配)
+//          如果在queryStartP位置之后,有子串和旧串模式匹配,那么令queryStartP为旧串的开头(使用模式匹配)
 //              删除主串中的旧子串
 //              在删除的位置增加一个新子串
 //              起始位置更新至旧串的结尾
 //      while(queryStartP非0)
 /*
 params:
-    oldSubStr:  传入参数,指出要删除的旧串
     mainStr:    传入参数,对该主串进行替换操作
+    oldSubStr:  传入参数,指出要删除的旧串
     newSubStr:  传入参数,指出要替换旧串的新串
 */
-Status Replace(String oldSubStr, String mainStr, String newSubStr)
+Status Replace(String mainStr, String oldSubStr, String newSubStr)
 {
     int queryStartP = 1;
-    String subStr;
+    if(StrEmpty(mainStr))
+        return ERROR;
     do
     {
-        SubString(subStr, mainStr, queryStartP, oldSubStr[0]);
-        if (queryStartP = Index(subStr, mainStr, queryStartP))
+        if (queryStartP = Index(oldSubStr, mainStr, queryStartP))
         {
             StrDelete(mainStr, queryStartP, oldSubStr[0]);
             StrInsert(mainStr, queryStartP, newSubStr);
@@ -317,11 +318,40 @@ Status Replace(String oldSubStr, String mainStr, String newSubStr)
     return OK;
 }
 
+void StrPrint(String str)
+{
+    for (int i = 1; i <= str[0]; i++)
+        printf("%c", str[i]);
+    printf("\n");
+    return;
+}
+
 int main(void)
 {
     String str1, str2;
     StrAssign(str1, "abcde");
     StrAssign(str2, "tt");
     StrInsert(str1, 2, str2);
+    StrPrint(str1);
+
+    StrCopy(str2, str1);
+    StrPrint(str2);
+
+    String str;
+    Concat(str, str1, str2);
+
+    ClearStr(str2);
+    printf("str2 is empty? %s\n", StrEmpty(str2) ? "Yes" : "No");
+    ClearStr(str);
+
+    StrDelete(str1,2,2);
+    StrPrint(str1);
+
+    StrAssign(str,"tt666asb6666asdjk6");
+    StrAssign(str1,"66");
+    StrAssign(str2,"?");
+    Replace(str,str1,str2);
+    StrPrint(str);
+
     return 0;
 }

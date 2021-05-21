@@ -216,7 +216,13 @@ Status StrInsert(String mainStr, int pos, String insertStr)
     {
         for (int i = MAXSIZE + 1 - insertStr[0]; i >= pos; i--) // 以移动多少长度得到循环关系
             mainStr[i + insertStr[0]] = mainStr[i];             // 以移动的间隔得到赋值关系
-        for (int i = )
+        for (int i = 1; i <= insertStr[0]; i++)                 // 以插入多少长度得到循环条件的关系
+            mainStr[i - 1 + pos] = insertStr[i];
     }
+    return OK;
+}
+
+Status StrDelete(String str, int pos, int len)
+{
     return OK;
 }

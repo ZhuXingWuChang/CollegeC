@@ -304,7 +304,7 @@ params:
 Status Replace(String mainStr, String oldSubStr, String newSubStr)
 {
     int queryStartP = 1;
-    if(StrEmpty(mainStr))
+    if (StrEmpty(mainStr))
         return ERROR;
     do
     {
@@ -344,13 +344,13 @@ int main(void)
     printf("str2 is empty? %s\n", StrEmpty(str2) ? "Yes" : "No");
     ClearStr(str);
 
-    StrDelete(str1,2,2);
+    StrDelete(str1, 2, 2);
     StrPrint(str1);
 
-    StrAssign(str,"tt666asb6666asdjk6");
-    StrAssign(str1,"66");
-    StrAssign(str2,"?");
-    Replace(str,str1,str2);
+    StrAssign(str, "tt666asb6666asdjk6");
+    StrAssign(str1, "66");
+    StrAssign(str2, "?");
+    Replace(str, str1, str2);
     StrPrint(str);
 
     return 0;

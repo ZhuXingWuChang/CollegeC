@@ -108,8 +108,18 @@ int Index(String desStr, String mainStr, int queryStartP)
         return 0;
 }
 
-int main(void)
+/*
+params:
+    desStr: 目的串,在模式匹配中,将该串与主串进行模式匹配
+    *next:  用来返回next数组的值
+*/
+void get_next(String desStr, int *next)
 {
     
+}
+
+int main(void)
+{
+
     return 0;
 }

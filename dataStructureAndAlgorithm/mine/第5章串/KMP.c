@@ -118,6 +118,34 @@ void get_next(String desStr, int *next)
     
 }
 
+/*
+KMP模式匹配算法,它和暴力匹配算法的差别就在于"两串不匹配"时的回溯问题,
+KMP有一个next数组,这个数组的大小取决于前后缀的相似程度,让KMP回溯到正确
+的位置,而并非两串的开头位置.
+*/
+int Index_KMP(String desStr, String mainStr, int queryStartP)
+{
+    int mainCursor = queryStartP;
+    int desCursor = 1;
+    while(mainCursor <= mainStr[0] && desCursor <= desStr[0])
+    {
+        if(desCursor == 0 || desStr[desCursor] == mainStr[mainCursor])
+        {
+            mainCursor++;
+            desCursor++;
+        }
+        else // 注意:这是KMP模式匹配算法的核心
+        {
+            desCursor = next[desCursor];
+        }
+    }
+
+    if(desCursor > desStr[0])
+        return mainCursor - desStr[0];
+    else
+        return 0;
+}
+
 int main(void)
 {
 

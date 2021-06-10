@@ -108,6 +108,9 @@ int Index(String desStr, String mainStr, int queryStartP)
         return 0;
 }
 
+// 对next数组的值的解释
+// next数组的值就是指,在desCursor指向的这个字符之前
+// 这部分子串的前后缀相似度
 /*
 params:
     desStr: 目的串,在模式匹配中,将该串与主串进行模式匹配
@@ -115,7 +118,23 @@ params:
 */
 void get_next(String desStr, int *next)
 {
-    
+    int desCursor, nextValue;
+    desCursor = 1;
+    nextValue = 0;
+    next[1] = nextValue;
+    while (desCursor <= desStr[0])
+    {
+        if (nextValue == 0 || desStr[desCursor] == desStr[nextValue])
+        {
+            nextValue++;
+            desCursor++;
+            next[desCursor] = nextValue;
+        }
+        else
+            nextValue = next[nextValue];
+    }
+
+    return;
 }
 
 /*
@@ -127,9 +146,11 @@ int Index_KMP(String desStr, String mainStr, int queryStartP)
 {
     int mainCursor = queryStartP;
     int desCursor = 1;
-    while(mainCursor <= mainStr[0] && desCursor <= desStr[0])
+    int next[MAXSIZE];
+    get_next(desStr, next);
+    while (mainCursor <= mainStr[0] && desCursor <= desStr[0])
     {
-        if(desCursor == 0 || desStr[desCursor] == mainStr[mainCursor])
+        if (desCursor == 0 || desStr[desCursor] == mainStr[mainCursor])
         {
             mainCursor++;
             desCursor++;
@@ -140,7 +161,54 @@ int Index_KMP(String desStr, String mainStr, int queryStartP)
         }
     }
 
-    if(desCursor > desStr[0])
+    if (desCursor > desStr[0])
+        return mainCursor - desStr[0];
+    else
+        return 0;
+}
+
+void new_get_next(String desStr, int *next)
+{
+    int desCursor, nextValue;
+    desCursor = 1;
+    nextValue = 0;
+    next[1] = nextValue;
+    while (desCursor <= desStr[0])
+    {
+        if (next[desCursor] == 0 || desStr[desCursor] == desStr[nextValue])
+        {
+            desCursor++;
+            nextValue++;
+            if (desStr[desCursor] != desStr[nextValue])
+                next[desCursor] = nextValue;
+            else
+                next[desCursor] = next[nextValue];
+        }
+        else
+            nextValue = next[nextValue];
+    }
+
+    return;
+}
+
+int new_Index_KMP(String desStr, String mainStr, int queryStartP)
+{
+    int mainCursor = queryStartP;
+    int desCursor = 1;
+    int new_next[MAXSIZE];
+    new_get_next(desStr, new_next);
+    while (mainCursor <= mainStr[0] && desCursor <= desStr[0])
+    {
+        if (desCursor == 0 || mainStr[mainCursor] == desStr[desCursor])
+        {
+            mainCursor++;
+            desCursor++;
+        }
+        else
+            desCursor = new_next[desCursor];
+    }
+
+    if (desCursor > desStr[0])
         return mainCursor - desStr[0];
     else
         return 0;

@@ -175,7 +175,7 @@ void new_get_next(String desStr, int *next)
     next[1] = nextValue;
     while (desCursor <= desStr[0])
     {
-        if (next[desCursor] == 0 || desStr[desCursor] == desStr[nextValue])
+        if (nextValue == 0 || desStr[desCursor] == desStr[nextValue])
         {
             desCursor++;
             nextValue++;
@@ -199,13 +199,15 @@ int new_Index_KMP(String desStr, String mainStr, int queryStartP)
     new_get_next(desStr, new_next);
     while (mainCursor <= mainStr[0] && desCursor <= desStr[0])
     {
-        if (desCursor == 0 || mainStr[mainCursor] == desStr[desCursor])
+        if (desCursor == 0 || desStr[desCursor] == mainStr[mainCursor])
         {
             mainCursor++;
             desCursor++;
         }
-        else
+        else // 注意:这是KMP模式匹配算法的核心
+        {
             desCursor = new_next[desCursor];
+        }
     }
 
     if (desCursor > desStr[0])
@@ -216,6 +218,10 @@ int new_Index_KMP(String desStr, String mainStr, int queryStartP)
 
 int main(void)
 {
-
+    String mainStr, desStr;
+    StrAssign(mainStr, "ababadc");
+    StrAssign(desStr, "adc");
+    int i = new_Index_KMP(desStr, mainStr, 1);
+    printf("%d\n", i);
     return 0;
 }

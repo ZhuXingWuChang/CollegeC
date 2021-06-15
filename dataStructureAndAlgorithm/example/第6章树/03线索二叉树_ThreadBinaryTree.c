@@ -126,7 +126,7 @@ Status InOrderTraverse_Thr(BiThrTree T)
 			visit(p->data); /* 访问后继结点 */
 		}
 		p=p->rchild;
-	}
+	}  
 	return OK;
 }
 

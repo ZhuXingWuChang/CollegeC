@@ -58,10 +58,10 @@ Status CreateBiThrTree(BiThrTree *btt)
             exit(0);
         (*btt)->data = ch;
         CreateBiThrTree(&((*btt)->lchild));
-        if (!(*btt)->lchild)
+        if ((*btt)->lchild)
             (*btt)->LTag = Link;
         CreateBiThrTree(&((*btt)->rchild));
-        if (!(*btt)->rchild)
+        if ((*btt)->rchild)
             (*btt)->RTag = Link;
     }
     return OK;
@@ -135,15 +135,15 @@ Status InOrderTraverse_Thr(BiThrTree btt)
     while (currentP != btt)
     {
         // 先找到最左的子树
-        while (currentP->lchild)
+        while (currentP->LTag == Link)
             currentP = currentP->lchild;
         // 循环结束后,currentP指向了最左子树的根结点
-        printf("%c ", currentP->data);
+        visit(currentP->data);
         // 看最左子树是否有最右子树,如果没有,使用线索回到它的双亲
         while (currentP->RTag == Thread && currentP->rchild != btt)
         {
             currentP = currentP->rchild;
-            printf("%c ", currentP->data);
+            visit(currentP->data);
         }
         // 剩下最后一种情况就是还剩Link右子树,那么进入
         currentP = currentP->rchild;
@@ -157,7 +157,8 @@ int main(void)
     InitBiThrTree(&mybtt);
     printf("Create a Tree:\n");
     CreateBiThrTree(&mybtt);
+    printf("Create end.\n");
     InOrderThreading(&header, mybtt);
-    InOrderTraverse_Thr(mybtt);
+    InOrderTraverse_Thr(header);
     return 0;
 }

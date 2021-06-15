@@ -32,12 +32,19 @@ Status visit(TElemType e)
 	return OK;
 }
 
+Status InitBiThrTree(BiThrTree *btt)
+{
+    *btt = NULL;
+    return OK;
+}
+
 /* 按前序输入二叉线索树中结点的值,构造二叉线索树T */
 /* 0(整型)/空格(字符型)表示空结点 */
 Status CreateBiThrTree(BiThrTree *T)
 { 
 	TElemType h;
 	scanf("%c",&h);
+	fflush(stdin);
 
 	if(h==Nil)
 		*T=NULL;
@@ -45,7 +52,7 @@ Status CreateBiThrTree(BiThrTree *T)
 	{
 		*T=(BiThrTree)malloc(sizeof(BiThrNode));
 		if(!*T)
-			exit(OVERFLOW);
+			exit(0);
 		(*T)->data=h; /* 生成根结点(前序) */
 		CreateBiThrTree(&(*T)->lchild); /* 递归构造左子树 */
 		if((*T)->lchild) /* 有左孩子 */
@@ -57,7 +64,7 @@ Status CreateBiThrTree(BiThrTree *T)
 	return OK;
 }
 
-BiThrTree pre; /* 全局变量,始终指向刚刚访问过的结点 */
+BiThrTree pre=NULL; /* 全局变量,始终指向刚刚访问过的结点 */
 /* 中序遍历进行中序线索化 */
 void InThreading(BiThrTree p)
 { 
@@ -84,7 +91,7 @@ Status InOrderThreading(BiThrTree *Thrt,BiThrTree T)
 { 
 	*Thrt=(BiThrTree)malloc(sizeof(BiThrNode));
 	if(!*Thrt)
-		exit(OVERFLOW);
+		exit(0);
 	(*Thrt)->LTag=Link; /* 建头结点 */
 	(*Thrt)->RTag=Thread;
 	(*Thrt)->rchild=(*Thrt); /* 右指针回指 */
@@ -126,10 +133,10 @@ Status InOrderTraverse_Thr(BiThrTree T)
 int main()
 {
 	BiThrTree H,T;
-	printf("请按前序输入二叉树(如:'ABDH##I##EJ###CF##G##')\n");
+	printf("Input Tree('ABDH##I##EJ###CF##G##')\n");
  	CreateBiThrTree(&T); /* 按前序产生二叉树 */
 	InOrderThreading(&H,T); /* 中序遍历,并中序线索化二叉树 */
-	printf("中序遍历(输出)二叉线索树:\n");
+	printf("Disp Tree:\n");
 	InOrderTraverse_Thr(H); /* 中序遍历(输出)二叉线索树 */
 	printf("\n");
 	

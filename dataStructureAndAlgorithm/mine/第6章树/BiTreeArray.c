@@ -140,7 +140,7 @@ TElemType LeftChild(SqBiTree bt, TElemType e)
         return Nil;
     for (int i = 0; i <= MAX_TREE_SIZE - 1; i++)
         if (bt[i] == e)
-            return bt[(i + 1) / 2 - 1];
+            return bt[(i + 1) * 2 - 1];
     return Nil;
 }
 
@@ -152,7 +152,7 @@ TElemType RightChild(SqBiTree bt, TElemType e)
         return Nil;
     for (int i = 0; i <= MAX_TREE_SIZE - 1; i++)
         if (bt[i] == e)
-            return bt[(i + 1) / 2];
+            return bt[(i + 1) * 2];
     return Nil;
 }
 

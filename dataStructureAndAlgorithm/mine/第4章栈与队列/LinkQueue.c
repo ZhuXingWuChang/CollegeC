@@ -113,7 +113,7 @@ Status EnQueue(LinkQueue *lqueue, ElemType elem)
 Status DeQueue(LinkQueue *lqueue, ElemType *elem)
 {
     QueuePtr deleteNodeP;
-    if (lqueue->rear == lqueue->rear)
+    if (lqueue->front == lqueue->rear)
         return ERROR;
     deleteNodeP = lqueue->front->next;
     *elem = deleteNodeP->data;

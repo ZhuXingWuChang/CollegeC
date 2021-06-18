@@ -11,9 +11,9 @@ typedef struct
     int numVexs, numEdges;
 } MGraph;
 
-MGraph CreateMGraph(MGraph *graph)
+MGraph CreateAMGraph(MGraph *graph)
 {
-    int i, j;   // 顶点的i下标, j下标
+    int i, j;   // i和j代表顶点的下标
     int weight; // 边的权值
     printf("Input number of Vertexs and Edges:\n");
     scanf("%d%d", &graph->numVexs, &graph->numEdges);
@@ -42,6 +42,6 @@ MGraph CreateMGraph(MGraph *graph)
 void main(void)
 {
     MGraph graph;
-    CreateMGraph(&graph);
+    CreateAMGraph(&graph);
     return;
 }

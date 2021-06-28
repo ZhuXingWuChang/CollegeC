@@ -1,3 +1,6 @@
+/*
+邻接表：Adjacency List
+*/
 #include <stdio.h>
 #include <stdlib.h>
 

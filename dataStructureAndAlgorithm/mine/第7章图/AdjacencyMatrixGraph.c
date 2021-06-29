@@ -17,7 +17,7 @@ typedef struct
     int numVexs, numEdges;
 } AMGraph;
 
-// 标志访问的数组,用来标记该顶点是否已经被访问过s
+// 标志访问的数组,用来标记该顶点是否已经被访问过
 bool visited[MAXVEX];
 
 void visit(VertexType vertex)
@@ -86,10 +86,9 @@ void DFSTraverse(AMGraph graph)
 /* 在广度优先遍历中,需使用广度优先队列,来记录"每一层"(也就是广度) */
 
 /* 循环队列的顺序存储结构 */
-#define MAXSIZE 100
 typedef struct
 {
-    int data[MAXSIZE];
+    int data[MAXVEX];
     int front; /* 头指针 */
     int rear;  /* 尾指针，若队列不空，指向队列尾元素的下一个位置 */
 } Queue;
@@ -114,11 +113,11 @@ bool QueueEmpty(Queue Q)
 /* 若队列未满，则插入元素e为Q新的队尾元素 */
 void EnQueue(Queue *Q, int e)
 {
-    if ((Q->rear + 1) % MAXSIZE == Q->front) /* 队列满的判断 */
+    if ((Q->rear + 1) % MAXVEX == Q->front) /* 队列满的判断 */
         return;
-    Q->data[Q->rear] = e;              /* 将元素e赋值给队尾 */
-    Q->rear = (Q->rear + 1) % MAXSIZE; /* rear指针向后移一位置， */
-                                       /* 若到最后则转到数组头部 */
+    Q->data[Q->rear] = e;             /* 将元素e赋值给队尾 */
+    Q->rear = (Q->rear + 1) % MAXVEX; /* rear指针向后移一位置， */
+                                      /* 若到最后则转到数组头部 */
     return;
 }
 
@@ -127,9 +126,9 @@ void DeQueue(Queue *Q, int *e)
 {
     if (Q->front == Q->rear) /* 队列空的判断 */
         return;
-    *e = Q->data[Q->front];              /* 将队头元素赋值给e */
-    Q->front = (Q->front + 1) % MAXSIZE; /* front指针向后移一位置， */
-                                         /* 若到最后则转到数组头部 */
+    *e = Q->data[Q->front];             /* 将队头元素赋值给e */
+    Q->front = (Q->front + 1) % MAXVEX; /* front指针向后移一位置， */
+                                        /* 若到最后则转到数组头部 */
     return;
 }
 /* ****************************************************** */
@@ -139,7 +138,7 @@ void BFSTraverse(AMGraph graph)
 {
     int i, j;
     Queue queue; // 广度优先队列,该队列用于存放广度优先遍历中每一层的顶点的下标
-    InitQueue(&queue);
+    queue = InitQueue(&queue);
     // 先初始化visited数组,所有顶点都是未访问过的状态
     for (i = 0; i < graph.numVexs; i++)
         visited[i] = false;

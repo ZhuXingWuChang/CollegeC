@@ -55,7 +55,7 @@ ALGraph CreateALGraph(ALGraph *graph)
     for (int k = 0; k < graph->numEdges; k++)
     {
         fflush(stdin);
-        printf("Input Vertex1 and Vertex2 of Edge, and weight of Edge:\n");
+        printf("Input Vertex1 and Vertex2 of %dth Edge, and weight of the Edge:\n", k);
         scanf("%d%d%d", &i, &j, &weight);
         // 使用头插法将EdgeNode链到VertexNode上
         edge = (EdgeNode *)malloc(sizeof(EdgeNode));

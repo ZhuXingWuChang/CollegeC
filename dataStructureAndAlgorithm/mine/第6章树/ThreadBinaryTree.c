@@ -70,7 +70,7 @@ Status CreateBiThrTree(BiThrTree *btt)
 // 全局变量,用来指向上一个访问过的结点(保存前驱结点的位置)
 BiThrTree prevP = NULL;
 // 用中序遍历进行中序线索化
-Status InThreading(BiThrTree currentP)
+void InThreading(BiThrTree currentP)
 {
     if (currentP)
     {

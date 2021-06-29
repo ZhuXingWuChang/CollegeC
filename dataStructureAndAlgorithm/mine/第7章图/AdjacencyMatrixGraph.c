@@ -35,8 +35,8 @@ AMGraph CreateAMGraph(AMGraph *graph)
     // 给各个顶点赋值
     for (int k = 0; k < graph->numVexs; k++)
     {
-        fflush(stdin);
         printf("Input a value of %dth Vertex:\n", k + 1);
+        fflush(stdin);
         scanf("%c", &graph->vexs[k]);
     }
     // 给所有边默认赋值为INFINITY(无权值)
@@ -46,7 +46,8 @@ AMGraph CreateAMGraph(AMGraph *graph)
     // 指定numEdges条边依附的顶点,以及权值
     for (int k = 0; k < graph->numEdges; k++)
     {
-        printf("Input Vertex1 and Vertex2 of Edge, and input weight of Edge:\n");
+        printf("Input a Edge for connecting Vertex1 and Vertex2, and input weight of the Edge:\n");
+        fflush(stdin);
         scanf("%d%d%d", &i, &j, &weight);
         graph->edge[i - 1][j - 1] = weight;
         graph->edge[j - 1][i - 1] = graph->edge[i - 1][j - 1];
@@ -64,7 +65,7 @@ void DFS(AMGraph graph, int i)
     for (j = 0; j < graph.numVexs; j++)
         // 如果这个边存在,且这个边所连接的顶点未被访问过
         if (graph.edge[i][j] != INFINITY && !visited[j])
-            DFS(graph, i);
+            DFS(graph, j);
     return;
 }
 // 深度优先遍历,需要调用上面的DFS封装好的操作
@@ -152,7 +153,7 @@ void BFSTraverse(AMGraph graph)
             visit(graph.vexs[i]);
             // 将第一个顶点的下标添加到广度优先队列中
             EnQueue(&queue, i);
-            // 只要队列中不是空的
+            // while循环中的操作是: 每出队一个顶点,就将该顶点的所有未访问过的邻接点入队
             while (!QueueEmpty(queue))
             {
                 // 删除队头元素,并且把它的"下一层"都加入到队尾
@@ -180,6 +181,10 @@ void BFSTraverse(AMGraph graph)
 void main(void)
 {
     AMGraph graph;
-    CreateAMGraph(&graph);
+    graph = CreateAMGraph(&graph);
+    printf("Depth First Search:\n");
+    DFSTraverse(graph);
+    printf("\nBreadth First Search:\n");
+    BFSTraverse(graph);
     return;
 }
